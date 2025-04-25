@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Model Viewer with Animation Control</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+    #menu {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1;
+    }
+    .color-button {
+      width: 30px;
+      height: 30px;
+      margin: 2px;
+      border: 1px solid #999;
+      cursor: pointer;
+      display: inline-block;
+      border-radius: 4px;
+    }
+    model-viewer {
+      --background-color: #ffffff;
+    }
+    #control-buttons {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="menu">
+  <div>Choose BackgroundColor:</div>
+  <div id="colorOptions">
+    <div class="color-button" style="background:#ffffff" data-color="#ffffff" title="Trắng"></div>
+    <div class="color-button" style="background:#cccccc" data-color="#cccccc" title="Xám"></div>
+    <div class="color-button" style="background:#000000" data-color="#000000" title="Đen"></div>
+    <div class="color-button" style="background:#007bff" data-color="#007bff" title="Xanh dương"></div>
+    <div class="color-button" style="background:#f9c74f" data-color="#f9c74f" title="Vàng"></div>
+  </div>
+  <div style="margin-top:10px">
+    <label for="fileInput">Choose Model (.glb):</label>
+    <input type="file" id="fileInput" accept=".glb">
+  </div>
+  <div id="control-buttons">
+    <button id="playButton">Play Animation</button>
+    <button id="pauseButton">Pause Animation</button>
+  </div>
+</div>
+
+<model-viewer id="viewer"
+  style="width: 100vw; height: 100vh; --background-color: #ffffff;"
+  camera-controls
+  auto-rotate
+  
+  exposure="1"
+  shadow-intensity="1"
+  reveal="auto"
+  poster=""
+></model-viewer>
+
+<script>
+  const viewer = document.getElementById('viewer');
+  
+  // Load model when file is selected
+  document.getElementById('fileInput').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file && file.name.endsWith('.glb')) {
+      const url = URL.createObjectURL(file);
+      viewer.src = url;
+    }
+  });
+
+  // Change background color
+  document.querySelectorAll('.color-button').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const color = this.getAttribute('data-color');
+      viewer.style.setProperty('--background-color', color);
+      viewer.style.backgroundColor = color; // fallback
+    });
+  });
+
+  // Play animation
+  document.getElementById('playButton').addEventListener('click', function() {
+    viewer.play();
+  });
+
+  // Pause animation
+  document.getElementById('pauseButton').addEventListener('click', function() {
+    viewer.pause();
+  });
+</script>
+
+</body>
+</html>
